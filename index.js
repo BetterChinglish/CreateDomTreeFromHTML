@@ -157,10 +157,11 @@ const fileHandler =  (err, data) => {
             tagStack.pop();
         }
 
-
         console.log(tagStack);
         console.log('--------------------------');
     })
+
+    console.log("输出dom树为:");
     console.log(JSON.stringify(domTree, null, 2));
 }
 
