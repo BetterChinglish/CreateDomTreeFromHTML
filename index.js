@@ -90,9 +90,8 @@ const fileHandler =  (err, data) => {
         }
         needSkip = false;
 
-        // TODO: 设置content值
         if (!(line.startsWith('<') && line.endsWith('>'))) {
-            
+            tagStack[tagStack.length - 1].content.push(line);
             return;
         }
 
@@ -103,7 +102,11 @@ const fileHandler =  (err, data) => {
         if (withOutLeftAndRightArr[0].startsWith('\/')) {
             console.log('结束标签', withOutLeftAndRightArr[0].slice(0));
             // TODO: 结束标签处理
-
+            if (tagStack.length === 1) {
+                domTree = tagStack[0];
+            }
+            tagStack.pop();
+            console.log(tagStack);
             console.log('--------------------------');
             return;
         }
@@ -149,11 +152,16 @@ const fileHandler =  (err, data) => {
             tagStack.push(node);
         }
 
+        // TODO: 自闭标签处理
+        if (node.tagName === 'meta') {
+            tagStack.pop();
+        }
 
-        console.log(node);
+
+        console.log(tagStack);
         console.log('--------------------------');
     })
-    console.dir(tagStack);
+    console.log(JSON.stringify(domTree, null, 2));
 }
 
 // 使用fs.readFile异步读取文件
