@@ -1,7 +1,14 @@
 const fs = require('fs');
+const { skip } = require('node:test');
 
 // 文件路径
 const filePath = './testFile.html';
+
+const TAGNAMES = {
+    HTML: 'html',
+    HEAD: 'head',
+
+}
 
 const fileHandler =  (err, data) => {
     if (err) {
@@ -38,6 +45,7 @@ const fileHandler =  (err, data) => {
     // 以下标将字符串分割
     const splitStrArr = [];
     needAddSplitIndex.unshift(0);
+    // TODO: 使用splice优化
     needAddSplitIndex.forEach((position, index) => {
         // 开头字符串
         if (index === 0) {
@@ -62,8 +70,90 @@ const fileHandler =  (err, data) => {
     if (endStrArr[0] === '<!DOCTYPE html>') {
         console.log('识别为html文档, 开始进行处理...');
     }
-
     console.dir(endStrArr);
+
+    // 构建dom树
+    const tagStack = [];
+    /**
+     * @param tagName 节点名称  string
+     * @param content 节点内容 []
+     * @param attrs 节点属性 {key: value}
+     * @param subNodes 子节点   []
+     * 
+     */
+    let domTree = null;
+    let needSkip = true;
+    endStrArr.forEach((line, index) => {
+        // 跳过非<html>开始前所有标签
+        if ((!line.startsWith('<html') || !line.endsWith('>')) && needSkip) {
+            return;
+        }
+        needSkip = false;
+
+        // TODO: 设置content值
+        if (!(line.startsWith('<') && line.endsWith('>'))) {
+            
+            return;
+        }
+
+        // 读取节点标签名与属性键值
+        const withOutLeftAndRightArr = line.split('<')[1].split('>')[0].split(' ');
+
+        // 开始还是结束标签
+        if (withOutLeftAndRightArr[0].startsWith('\/')) {
+            console.log('结束标签', withOutLeftAndRightArr[0].slice(0));
+            // TODO: 结束标签处理
+
+            console.log('--------------------------');
+            return;
+        }
+        console.log('开始标签');
+
+        // 开始标签处理
+        // 创建节点对象
+        /**
+         * @param tagName 节点名称  string
+         * @param content 节点内容 []
+         * @param attrs 节点属性 {key: value}
+         * @param subNodes 子节点   []
+         * 
+         */
+        const node = {
+            tagName: withOutLeftAndRightArr.shift(),
+            content: [],
+            attrs: {},
+            subNodes: [],
+        };
+
+        // 如果还有属性
+        if (withOutLeftAndRightArr.length > 0) {
+            // 处理属性
+            const keyValueStr = withOutLeftAndRightArr.join(' ');
+            const regex = /(\w+)\s*=\s*("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|[^"\s']+)/g;
+            let match;
+            while ((match = regex.exec(keyValueStr)) !== null) {
+                // match[1] 是键（key），match[2] 是值（value，包括引号）
+                const [, key, valueWithQuotes] = match;
+                // 去除首尾的引号
+                const value = valueWithQuotes.replace(/^['"]|['"]$/g, '');
+                node.attrs[key] = value;
+            }
+        }
+
+        // 放入栈, 判断是否已经有节点, 如果有还需要加到最上面那个节点的子节点中
+        if (tagStack.length === 0) {
+            tagStack.push(node);
+        }
+        else {
+            tagStack[tagStack.length - 1].subNodes.push(node);
+            tagStack.push(node);
+        }
+
+
+        console.log(node);
+        console.log('--------------------------');
+    })
+    console.dir(tagStack);
 }
 
 // 使用fs.readFile异步读取文件
