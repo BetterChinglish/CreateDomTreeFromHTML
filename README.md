@@ -10,19 +10,19 @@ use node.js to read html file and create its dom tree
 
 ```JavaScript
 // 如果还有属性
-        if (withOutLeftAndRightArr.length > 0) {
-            // 处理属性
-            const keyValueStr = withOutLeftAndRightArr.join(' ');
-            const regex = /(\w+)\s*=\s*("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|[^"\s']+)/g;
-            let match;
-            while ((match = regex.exec(keyValueStr)) !== null) {
-                // match[1] 是键（key），match[2] 是值（value，包括引号）
-                const [, key, valueWithQuotes] = match;
-                // 去除首尾的引号
-                const value = valueWithQuotes.replace(/^['"]|['"]$/g, '');
-                node.attrs[key] = value;
-            }
-        }
+if (withOutLeftAndRightArr.length > 0) {
+    // 处理属性
+    const keyValueStr = withOutLeftAndRightArr.join(' ');
+    const regex = /(\w+)\s*=\s*("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|[^"\s']+)/g;
+    let match;
+    while ((match = regex.exec(keyValueStr)) !== null) {
+        // match[1] 是键（key），match[2] 是值（value，包括引号）
+        const [, key, valueWithQuotes] = match;
+        // 去除首尾的引号
+        const value = valueWithQuotes.replace(/^['"]|['"]$/g, '');
+        node.attrs[key] = value;
+    }
+}
 ```
 
 可以在这里的join(' ')前进行处理
