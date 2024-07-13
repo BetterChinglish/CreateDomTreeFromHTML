@@ -35,13 +35,15 @@ const fileHandler =  (err, data) => {
             needAddSplitIndex.push(i - 1);
         }
     }
-
     // 以下标将字符串分割
     const splitStrArr = [];
-    needAddSplitIndex.unshift(0)
+    needAddSplitIndex.unshift(0);
     needAddSplitIndex.forEach((position, index) => {
         if (index === needAddSplitIndex.length - 1) {
             splitStrArr.push(strData.slice(position+1))
+        }
+        else if (index === 0) {
+            splitStrArr.push(strData.slice(position, needAddSplitIndex[index + 1]));
         }
         else {
             splitStrArr.push(strData.slice(position+1, needAddSplitIndex[index+1]+1))
@@ -50,6 +52,9 @@ const fileHandler =  (err, data) => {
 
     const endStr = splitStrArr.join('\r\n');
     const endStrArr = endStr.split('\r\n');
+    if (endStrArr[endStrArr.length - 1].length === 0) {
+        endStrArr.pop();
+    }
 
     console.dir(endStrArr);
 }
