@@ -39,14 +39,16 @@ const fileHandler =  (err, data) => {
     const splitStrArr = [];
     needAddSplitIndex.unshift(0);
     needAddSplitIndex.forEach((position, index) => {
-        if (index === needAddSplitIndex.length - 1) {
+        // 开头字符串
+        if (index === 0) {
+            splitStrArr.push(strData.slice(position, needAddSplitIndex[index + 1] + 1));
+        }
+        // 末尾字符串
+        else if (index === needAddSplitIndex.length - 1) {
             splitStrArr.push(strData.slice(position+1))
         }
-        else if (index === 0) {
-            splitStrArr.push(strData.slice(position, needAddSplitIndex[index + 1]));
-        }
         else {
-            splitStrArr.push(strData.slice(position+1, needAddSplitIndex[index+1]+1))
+            splitStrArr.push(strData.slice(position+1, needAddSplitIndex[index+1] + 1))
         }
     })
 
@@ -54,6 +56,11 @@ const fileHandler =  (err, data) => {
     const endStrArr = endStr.split('\r\n');
     if (endStrArr[endStrArr.length - 1].length === 0) {
         endStrArr.pop();
+    }
+
+    // TODO: 移到最前面判断前15个字符是否符合html文档标签
+    if (endStrArr[0] === '<!DOCTYPE html>') {
+        console.log('识别为html文档, 开始进行处理...');
     }
 
     console.dir(endStrArr);
