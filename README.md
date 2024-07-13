@@ -1,5 +1,94 @@
 # CreateDomTreeFromHTML
 use node.js to read html file and create its dom tree
+## 展示
+
+对于testFile.html
+
+```HTML
+<!DOCTYPE html><html
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <div>
+        <span>alsdjlaksdj</span>
+    </div>
+</head>
+<body>
+    
+</body>
+</html>
+```
+
+生成结果:
+
+```
+{
+  "tagName": "html",
+  "content": [],
+  "attrs": {
+    "lang": "en"
+  },
+  "subNodes": [
+    {
+      "tagName": "head",
+      "content": [],
+      "attrs": {},
+      "subNodes": [
+        {
+          "tagName": "meta",
+          "content": [],
+          "attrs": {
+            "charset": "UTF-8"
+          },
+          "subNodes": []
+        },
+        {
+          "tagName": "meta",
+          "content": [],
+          "attrs": {
+            "name": "viewport",
+            "content": "width=device-width, initial-scale=1.0"
+          },
+          "subNodes": []
+        },
+        {
+          "tagName": "title",
+          "content": [
+            "Document"
+          ],
+          "attrs": {},
+          "subNodes": []
+        },
+        {
+          "tagName": "div",
+          "content": [],
+          "attrs": {},
+          "subNodes": [
+            {
+              "tagName": "span",
+              "content": [
+                "alsdjlaksdj"
+              ],
+              "attrs": {},
+              "subNodes": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tagName": "body",
+      "content": [],
+      "attrs": {},
+      "subNodes": []
+    }
+  ]
+}
+
+```
+
+
 
 ## 优化
 目前基本逻辑是已经完成了
